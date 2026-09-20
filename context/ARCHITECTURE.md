@@ -46,7 +46,17 @@ Where should entries live now that they must survive a cleared cache?
 ---
 
 ## ADR-001: Store entries in localStorage
+**Title and date:** Delegate editable progress markers to AI assistance - 9-11-2026
 
 **Status:** Superseded by ADR-002
 
-*Paste your HW3 ADR-001 here, unedited. The reasoning was true on September 10; the record should show that it was.*
+**Door / concrete acquisition and execution choice:** Delegate
+
+**Context:** FEATURES.md requires users to create, edit, update, view, and remove their own progress markers. The feature must persist progress markers and cannot rank users. The budget is zero, and I cannot yet read server code well enough to create or check an entire implementation myself.
+
+**Decision:** Delegate development of the editable progress-tracker feature to AI assistance.
+
+**Consequences and revisit trigger:** 
+- **Easier:** Faster development, less technical difficulty with implementation
+- **Harder:** Difficulty inspecting the code, especially if the code requires debugging; does not guarantee that all acceptance criteria will be met
+- **Revisit:** Module 4, when a database becomes available; if the architecture changes, write ADR-002 and supersede this decision
