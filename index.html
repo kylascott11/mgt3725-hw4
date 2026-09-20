@@ -1,26 +1,77 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Entries</title>
+  <title>Progress Tracker | MGT 3745</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
 </head>
 <body>
   <main>
-    <h1>Entries</h1>
-    <p class="lede">Replace this heading and copy with your HW3 feature. Structure lives here; presentation in styles.css; behavior and data in app.js.</p>
+    <h1>Progress Tracker</h1>
+    <p>Input a goal or expectation from yourself or your environment and track your progress toward meeting it.</p>
 
-    <form id="entry-form">
-      <label for="entry-text">New entry</label>
-      <input id="entry-text" name="text" type="text" autocomplete="off" required>
-      <button type="submit">Save</button>
-    </form>
+    <section aria-labelledby="createGoalHeading">
+      <form id="goalForm" novalidate>
+        <label for="goalName">Goal/Expectation Name</label>
+        <p id="goalError" role="alert" aria-live="assertive"></p>
+        <p id="goalNameHelp">Enter a short description of something you are working toward.</p>
+        <input id="goalName" name="goalName" type="text" aria-describedby="goalNameHelp goalError" autocomplete="off">
 
-    <p id="status" class="status" role="status" aria-live="polite"></p>
+        <label for="goalPercentage">Percentage Complete</label>
+        <p id="percentageError" role="alert" aria-live="assertive"></p>
+        <p id="goalPercentageHelp">Enter the starting percentage of completion for this goal/expectation.</p>
+        <input id="goalPercentage" name="goalPercentage" type="number" min="0" max="100" step="1" value="0" aria-describedby="goalError">
 
-    <ul id="entry-list" aria-label="Saved entries"></ul>
+        <label for="goalStatus">Status</label>
+        <select id="goalStatus" name="goalStatus" aria-describedby="goalError">
+          <option value="not-started">Not started</option>
+          <option value="in-progress">In progress</option>
+          <option value="completed">Completed</option>
+        </select>
+
+        <button type="submit">Add Goal/Expectation</button>
+      </form>
+    </section>
+
+    <p id="saveStatus" role="status" aria-live="polite"></p>
+    <p id="saveError" role="alert" aria-live="assertive"></p>
+
+    <section aria-labelledby="progressHeading">
+      <h2 id="progressHeading">Your Progress</h2>
+      <p id="emptyState">No goals/expectations set yet.</p>
+
+      <section aria-labelledby="notStartedHeading">
+        <h3 id="notStartedHeading">Not Started</h3>
+        <ul id="notStartedGoalList" aria-label="Not started goals/expectations"></ul>
+      </section>
+
+      <section aria-labelledby="inProgressHeading">
+        <h3 id="inProgressHeading">In Progress</h3>
+        <ul id="inProgressGoalList" aria-label="In progress goals/expectations"></ul>
+      </section>
+
+      <section aria-labelledby="completedHeading">
+        <h3 id="completedHeading">Completed</h3>
+        <ul id="completedGoalList" aria-label="Completed goals/expectations"></ul>
+      </section>
+    </section>
+
+    <template id="markerTemplate">
+      <li class="progress-tracker">
+        <article>
+          <h4 class="tracker-name"></h4>
+          <p class="tracker-status"></p>
+          <div class="tracker-actions" aria-label="Progress Tracker actions">
+            <button type="button" data-action="edit">Edit</button>
+            <button type="button" data-action="update">Update</button>
+            <button type="button" data-action="complete">Mark complete</button>
+            <button type="button" data-action="remove">Remove</button>
+          </div>
+        </article>
+      </li>
+    </template>
   </main>
-  <script src="app.js"></script>
 </body>
 </html>
