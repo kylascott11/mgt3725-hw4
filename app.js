@@ -5,7 +5,7 @@
 // those two lines, and that is what HW4 asks you to write down.
 
 // Paste your deployed Worker URL here after `npx wrangler deploy`.
-const API = "https://mgt3745-hw4.YOUR-SUBDOMAIN.workers.dev";
+const API = "https://mgt3745-hw4.kscott92.workers.dev"
 
 // ---- HW3, for the record (superseded by ADR-002) ------------------------
 // function load()      { return JSON.parse(localStorage.getItem("entries") || "[]"); }
