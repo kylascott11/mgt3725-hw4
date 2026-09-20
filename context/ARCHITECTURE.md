@@ -19,7 +19,7 @@
 **Supersedes:** ADR-001
 
 ### Context
-*Progress marker data, which includes the name and description of the goal/expectations saved and their respective percentage complete and status, must leave the browser and be stored remotely. This data will be sent from the application to a Cloudflare Worker to be stored in Cloudflare D1. Cloudflare will provide the Worker and D1 infrastructure, while I am accountable for building the application's data model, how data is sent and retrieved, and how the feature is tested.*
+*ADR-001 delegated development of the progress-marker feature to AI assistance and initially stored entries in localStorage. Because localStorage data can be lost when the browser cache is cleared, HW4 requires a new decision about where entries should be stored. This data, including the name and description of the goal/expectations saved and their respective percentage complete and status, must leave the browser and be stored remotely. This data will be sent from the application to a Cloudflare Worker to be stored in Cloudflare D1. Cloudflare will provide the Worker and D1 infrastructure, while I am accountable for building the application's data model, how data is sent and retrieved, and how the feature is tested.*
 
 ### Decision
 
