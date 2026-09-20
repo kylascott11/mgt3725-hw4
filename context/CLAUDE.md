@@ -20,6 +20,15 @@ Do not read /curiosity unless asked.
 - Prefer the boring choice. Name any innovation token you spend in an ADR.
 - Small diffs. One concern per commit. Explain why in the message.
 
+
+- Use descriptive camelCase names and avoid unnecessary abbreviations.
+- Keep naming consistent between HTML IDs and JavaScript selectors. 
+- Keep HTML, CSS, and JavaScript separate and use lexical scope. 
+- Explain reasoning in comments when code is not immediately understandable. 
+- Do not use inline styles. Verify expected behavior before claiming completion. 
+- Never invent interview evidence or test results. 
+- Leave preview files as previews.
+
 ## When unsure
 
 Ask, in a comment or in the chat, rather than guessing. Say what you could
