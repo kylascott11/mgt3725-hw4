@@ -14,7 +14,8 @@ const API = "https://mgt3745-hw4.kscott92.workers.dev"
 
 (() => {
   'use strict';
-
+  
+  const storageKey = 'mgt3745.progressTracker.v1';
   const goalForm = document.querySelector('#goalForm');
   const goalNameInput = document.querySelector('#goalName');
   const goalPercentageInput = document.querySelector('#goalPercentage');
@@ -32,33 +33,42 @@ const API = "https://mgt3745-hw4.kscott92.workers.dev"
     'in-progress': 'In Progress',
     completed: 'Completed'
   };
-  let progressTracker = { goals: [] };
+  let progressTracker = loadProgressTracker();
   // Give each goal a unique ID so individual goals can be edited or deleted later.
-  let nextGoalId = 1;
+  let nextGoalId = progressTracker.goals.reduce(
+    (highestId, progressGoal) => Math.max(highestId, progressGoal.id),
+    0
+  ) + 1;
 
-  async function loadProgressTracker() {
+  function loadProgressTracker() {
     try {
-      const res = await fetch(API + '/entries');
-      if (!res.ok) throw new Error('could not load');
-      const entries = await res.json();
-      const savedTracker = [...entries].reverse().map(entry => {
-        try { return JSON.parse(entry.text); } catch { return null; }
-      }).find(value => value && Array.isArray(value.goals));
-      const trackerGoalNames = new Set((savedTracker?.goals || []).map(goal => goal.name));
-      const legacyGoals = entries
-        .filter(entry => {
-          try { return !Array.isArray(JSON.parse(entry.text).goals); } catch { return true; }
+      const storedText = window.localStorage.getItem(storageKey);
+      const parsed = storedText === null ? { goals: [] } : JSON.parse(storedText);
+      const validStatuses = ['not-started', 'in-progress', 'completed'];
+      const hasValidGoals = Array.isArray(parsed.goals) && parsed.goals.every(progressGoal => (
+        Number.isInteger(progressGoal.id)
+        && typeof progressGoal.name === 'string'
+        && validStatuses.includes(progressGoal.status)
+        && (progressGoal.percentage === undefined
+          || (Number.isInteger(progressGoal.percentage)
+            && progressGoal.percentage >= 0
+            && progressGoal.percentage <= 100))
+      ));
+      if (!hasValidGoals) {
+        throw new Error('Unexpected stored data');
+      }
+      return {
+        goals: parsed.goals.map(progressGoal => {
+          const percentage = progressGoal.percentage ?? 0;
+          return {
+            ...progressGoal,
+            percentage,
+            status: percentage === 0 ? progressGoal.status : getProgressStatus(percentage)
+          };
         })
-        .filter(entry => !trackerGoalNames.has(entry.text))
-        .map(entry => ({
-          id: entry.id,
-          name: entry.text,
-          percentage: 0,
-          status: 'not-started'
-        }));
-      return { goals: [...legacyGoals, ...(savedTracker?.goals || [])] };
+      };
     } catch {
-      saveError.textContent = 'Could not load saved goals from the server.';
+      saveStatus.textContent = 'Goals/expectations could not be read. Starting with an empty list.';
       return { goals: [] };
     }
   }
@@ -75,18 +85,13 @@ const API = "https://mgt3745-hw4.kscott92.workers.dev"
       statusSelect.value = 'not-started';
     }
   }
-
-  async function saveProgressTracker(entry) {
+// Save changes before updating the displayed state so failed saves do not appear successful.
+  function saveProgressTracker(nextProgressTracker) {
     try {
-      const res = await fetch(API + '/entries', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ text: JSON.stringify(entry) })
-      });
-      if (!res.ok) throw new Error('could not save');
+      window.localStorage.setItem(storageKey, JSON.stringify(nextProgressTracker));
       return true;
     } catch {
-      saveError.textContent = 'Could not save. Check the server connection and try again.';
+      saveError.textContent = 'Could not save. Your goal/expectation is still here. Try again when storage is available.';
       saveStatus.textContent = '';
       return false;
     }
@@ -135,7 +140,7 @@ const API = "https://mgt3745-hw4.kscott92.workers.dev"
     inlineGoalNameInput.focus();
 
     cancelButton.addEventListener('click', renderProgressGoals);
-    saveButton.addEventListener('click', async () => {
+    saveButton.addEventListener('click', () => {
       const trimmedGoalName = inlineGoalNameInput.value.trim();
       const percentage = Number(inlineGoalPercentageInput.value);
       if (trimmedGoalName.length === 0) {
@@ -162,7 +167,7 @@ const API = "https://mgt3745-hw4.kscott92.workers.dev"
             : existingGoal
         ))
       };
-      if (!await saveProgressTracker(nextProgressTracker)) return;
+      if (!saveProgressTracker(nextProgressTracker)) return;
 
       progressTracker = nextProgressTracker;
       renderProgressGoals();
@@ -172,11 +177,11 @@ const API = "https://mgt3745-hw4.kscott92.workers.dev"
     });
   }
 // Create a new list without the selected goal so the deletion can be saved safely.
-  async function deleteProgressGoal(progressGoal) {
+  function deleteProgressGoal(progressGoal) {
     const nextProgressTracker = {
       goals: progressTracker.goals.filter(existingGoal => existingGoal.id !== progressGoal.id)
     };
-    if (!await saveProgressTracker(nextProgressTracker)) return;
+    if (!saveProgressTracker(nextProgressTracker)) return;
 
     progressTracker = nextProgressTracker;
     renderProgressGoals();
@@ -228,7 +233,7 @@ const API = "https://mgt3745-hw4.kscott92.workers.dev"
     });
   }
 
-  goalForm.addEventListener('submit', async event => {
+  goalForm.addEventListener('submit', event => {
     event.preventDefault();
     const goalName = goalNameInput.value.trim();
     const percentage = Number(goalPercentageInput.value);
@@ -252,7 +257,7 @@ const API = "https://mgt3745-hw4.kscott92.workers.dev"
       status: percentage === 0 ? goalStatusSelect.value : getProgressStatus(percentage)
     };
     const nextProgressTracker = { goals: [...progressTracker.goals, progressGoal] };
-    if (!await saveProgressTracker(nextProgressTracker)) return;
+    if (!saveProgressTracker(nextProgressTracker)) return;
 
   // Update the saved state before rendering so the page reflects the newly saved marker.
     nextGoalId += 1;
@@ -270,15 +275,6 @@ const API = "https://mgt3745-hw4.kscott92.workers.dev"
   goalPercentageInput.addEventListener('input', () => {
     updateStatusOptions(goalStatusSelect, Number(goalPercentageInput.value));
   });
-  async function initialize() {
-    progressTracker = await loadProgressTracker();
-    nextGoalId = progressTracker.goals.reduce(
-      (highestId, progressGoal) => Math.max(highestId, progressGoal.id),
-      0
-    ) + 1;
-    updateStatusOptions(goalStatusSelect, Number(goalPercentageInput.value));
-    renderProgressGoals();
-  }
-
-  initialize();
+  updateStatusOptions(goalStatusSelect, Number(goalPercentageInput.value));
+  renderProgressGoals();
 })();
