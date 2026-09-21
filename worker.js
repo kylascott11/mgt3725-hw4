@@ -50,6 +50,11 @@ async function handle(request, env) {
       { status: 500, headers: CORS });
   }
 
+  if (request.method === "GET" && url.pathname === "/") {
+    return new Response("Worker is running. Use /entries for the API.",
+      { status: 200, headers: CORS });
+  }
+
   if (request.method === "GET" && url.pathname === "/entries") {
     const { results } = await env.DB.prepare(
       "SELECT * FROM entries ORDER BY id").all();
@@ -63,8 +68,8 @@ async function handle(request, env) {
     } catch {
       return new Response("body must be JSON", { status: 400, headers: CORS });
     }
-    if (!body.text) {
-      return new Response("text required", { status: 400, headers: CORS });
+    if (typeof body.text !== "string" || body.text.trim().length === 0) {
+      return new Response("text must be a non-empty string", { status: 400, headers: CORS });
     }
     // HW4 Part 3: add one more validation rule here that traces to an
     // EARS unwanted-behavior statement in your FEATURES.md.
