@@ -4,11 +4,11 @@ Coding and documentation rules, for humans. Restated for agents in CLAUDE.md.
 Copy in from HW3; the HW4 rows are added for you.
 
 ## Rules
-1. **Structure:** Separate HTML, CSS, and JavaScript into index.html, styles.css, and app.js. Use lexical scope; do not create accidental global variables.
-2. **Forbidden:** Do not use inline styles.*
-3. **(HW4)** User values reach SQL through `bind()`, never string concatenation.
-4. **(HW4)** No credential in the repository. Not in code, not in config, not in a context file. Database ids are addresses and may appear in `wrangler.toml`.
-5. **(HW4)** A failed request is shown to the user on the page and is never thrown in the console.
+1. Separate HTML, CSS, and JavaScript into index.html, styles.css, and app.js. Use lexical scope; do not create accidental global variables.
+2. Do not use inline styles.
+3. User values reach SQL through `bind()`, never string concatenation.
+4. No credential in the repository. Not in code, not in config, not in a context file. Database ids are addresses and may appear in `wrangler.toml`.
+5. A failed request is shown to the user on the page and is never thrown in the console.
 6. No stray `console.log` in committed code.
 
 ## Naming
