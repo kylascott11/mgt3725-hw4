@@ -17,8 +17,3 @@ Do not read /curiosity unless asked.
 - Do not use inline styles. Verify expected behavior before claiming completion. 
 - Never invent interview evidence or test results. 
 - Leave preview files as previews.
-
-## When unsure
-
-Ask, in a comment or in the chat, rather than guessing. Say what you could
-not verify.

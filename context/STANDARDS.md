@@ -1,7 +1,6 @@
 # STANDARDS.md
 
 Coding and documentation rules, for humans. Restated for agents in CLAUDE.md.
-Copy in from HW3; the HW4 rows are added for you.
 
 ## Rules
 1. Separate HTML, CSS, and JavaScript into index.html, styles.css, and app.js. Use lexical scope; do not create accidental global variables.
@@ -15,6 +14,6 @@ Copy in from HW3; the HW4 rows are added for you.
 - Use descriptive camelCase identifiers. Short conventional event/index names are acceptable when their role is obvious; avoid unnecessary abbreviations. Use names that clearly describe what the variable or function represents. Keep naming consistent between HTML IDs and JavaScript selectors.
 
 ## Documentation
--  **Comments:** Use comments to explain the reasoning behind code, especially when AI-assisted code is not immediately understandable. Comments should help another person understand the code without explaining every line. If the code needs a comment to say what it does, rename something.
-- **Commits:** Keep commit messages under 10 words. Write them in present tense. Make sure to include a verb and a specific noun. For example, "Add goal tracking" or "Fix status formatting."
+-  Use comments to explain the reasoning behind code, especially when AI-assisted code is not immediately understandable. Comments should help another person understand the code without explaining every line. If the code needs a comment to say what it does, rename something.
+- Keep commit messages under 10 words. Write them in present tense. Make sure to include a verb and a specific noun. For example, "Add goal tracking" or "Fix status formatting."
 
